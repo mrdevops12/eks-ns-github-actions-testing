@@ -24,24 +24,26 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # Step 3: Install kubectl and AWS CLI
+    # Step 3: Install kubectl
     - name: Install kubectl
       uses: azure/setup-kubectl@v3
       with:
         version: 'v1.27.0'
 
+    # Step 4: Install AWS CLI
     - name: Install AWS CLI
       run: |
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         unzip awscliv2.zip
         sudo ./aws/install
+        aws --version
 
-    # Step 4: Update kubeconfig to point to your EKS cluster
+    # Step 5: Update kubeconfig to point to your EKS cluster
     - name: Update kubeconfig for EKS cluster
       run: |
         aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name test-kube
 
-    # Step 5: Apply Namespace and Resource Quotas
+    # Step 6: Apply Namespace and Resource Quotas
     - name: Apply Namespace and Resource Quota
       run: |
         kubectl create namespace ${{ github.event.inputs.namespace }} || true
@@ -60,9 +62,8 @@ jobs:
             limits.memory: "8Gi"
         EOF
 
-    # Step 6: Verify Deployment
+    # Step 7: Verify Deployment
     - name: Verify Namespace and Quota
       run: |
         kubectl get namespaces
         kubectl describe resourcequota tenant-quota -n ${{ github.event.inputs.namespace }}
-
