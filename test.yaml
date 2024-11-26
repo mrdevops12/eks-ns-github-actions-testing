@@ -39,7 +39,7 @@ jobs:
     # Step 4: Update kubeconfig to point to your EKS cluster
     - name: Update kubeconfig for EKS cluster
       run: |
-        aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name <your-eks-cluster-name>
+        aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name test-kube
 
     # Step 5: Apply Namespace and Resource Quotas
     - name: Apply Namespace and Resource Quota
